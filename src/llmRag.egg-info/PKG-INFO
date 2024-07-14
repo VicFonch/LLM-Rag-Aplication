@@ -1,0 +1,10 @@
+Metadata-Version: 2.1
+Name: llmRag
+Version: 0.0.0
+Summary: A small python package for a Rag application
+Home-page: https://github.com/VicFonch/LLM-Rag-Aplication
+Author: VicFonch
+Author-email: vfonte@outlook.com
+Project-URL: Bug Tracker, https://github.com/VicFonch/LLM-Rag-Aplication/issues
+
+# LLM-Rag-Aplication
