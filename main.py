@@ -1,3 +1,12 @@
-from llmRag import logger
+import pymongo
+import dotenv
+import os
 
-logger.info("Hello World")
+config = dotenv.dotenv_values(".env")
+
+MONGO_CONNECTION = os.getenv(config["MONGO_CONNECTION"])
+client = pymongo.MongoClient(MONGO_CONNECTION)
+
+
+
+

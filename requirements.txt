@@ -1,15 +1,9 @@
 pandas 
-mlflow
-notebook
-numpy
-scikit-learn
-matplotlib
-python-box==6.0.2
-pyYAML
-tqdm
-ensure==1.0.2
-joblib
-types-PyYAML
+re
+pymongo
+python-dotenv
+langchain
+langchain-community
 fastapi
 uvicorn
 -e .
