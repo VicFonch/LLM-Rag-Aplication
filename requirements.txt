@@ -2,6 +2,8 @@ pandas
 re
 pymongo
 python-dotenv
+pymupdf
+tqdm
 langchain
 langchain-community
 fastapi
