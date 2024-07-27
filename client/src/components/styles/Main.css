@@ -20,6 +20,32 @@
     cursor: pointer;
 }
 
+.main .nav .nav-links{
+    display: flex;
+    gap: 20px;
+}
+
+.main .nav .nav-links button{
+    font-size: 18px;
+    cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    background-color: #f0f4f9;
+    /* padding: 5px 15px; */
+    border-radius: 50px;
+}
+.main .nav .nav-links button:hover{
+    background-color: #e6eaf1;
+    transition: all 0.5s;
+}
+
+.main .nav .nav-links .login{
+    padding: 5px 25px;
+}
+.main .nav .nav-links .signup{
+    padding: 5px 15px;
+}
+
 .main-container{
     max-width: 900px;
     margin: auto;
@@ -30,7 +56,7 @@
     font-size: 56px;
     color: #c4c7c5;
     font-weight: 500;
-    padding: 20px;
+    padding: 20px 0px;
 }
 
 .main .greet span{

@@ -1,5 +1,5 @@
-import "./Sidebar.css";
-import { assets } from "../../assets/assets";
+import "./styles/Sidebar.css";
+import { assets } from "../assets/assets";
 import { useState } from "react";
 
 export const Sidebar = () => {

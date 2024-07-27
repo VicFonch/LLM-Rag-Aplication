@@ -1,5 +1,7 @@
-import "./Main.css";
-import { assets } from "../../assets/assets";
+import "./styles/Main.css";
+import { useState } from "react";
+import { assets } from "../assets/assets";
+import { Link } from "react-router-dom";
 
 const cardsData = [
   { id: 1, title: "Card 1", description: "Description for Card 1" },
@@ -9,18 +11,33 @@ const cardsData = [
 ];
 
 export const Main = () => {
+  const [isLogedIn, setIsLogedIn] = useState(false);
+
   return (
     <div className="main">
       <div className="nav">
-        <p>World War II Assistent</p>
-        <img src={assets.user_icon} alt="" />
+        <p>The Resistance Archive</p>
+        {isLogedIn ? (
+          <img src={assets.user_icon} alt="" />
+        ) : (
+          <div className="nav-links">
+            <Link to={"/login"}>
+              <button className="login">Login</button>
+            </Link>
+            <Link to={"/login"}>
+              <button className="signup">Sign Up</button>
+            </Link>
+          </div>
+        )}
       </div>
       <div className="main-container">
         <div className="greet">
           <p>
-            <span>Hello, Historian</span>
+            <span>Solder, Atten-hut!</span>
           </p>
-          <p>What date do you want to search</p>
+          <p>
+            What do you want to know of <span>WW II</span>
+          </p>
         </div>
         <div className="cards">
           {cardsData.map((card) => (

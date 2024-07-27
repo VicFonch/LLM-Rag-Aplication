@@ -1,127 +1,59 @@
-from dotenv import load_dotenv
-import os, json
+import os
 from motor.motor_asyncio import AsyncIOMotorClient
-from typing import AsyncIterable
-import asyncio
+from bson import ObjectId
+from dotenv import load_dotenv
 
-#from langchain_mongodb import MongoDBAtlasVectorSearch
-from langchain_community.embeddings import OllamaEmbeddings
-from langchain_community.chat_models.ollama import ChatOllama
-from langchain.schema import HumanMessage, AIMessage, SystemMessage
-from langchain.callbacks import AsyncIteratorCallbackHandler
-from langchain_core.messages.base import BaseMessage
-
-#from functions.model import DBModel
+from dbmodels import UserModel, UpdateUserModel
 
 load_dotenv("../.env")
 MONGO_URI = os.getenv("MONGO_URI")
 DB_NAME = os.getenv("DB_NAME")
-COLLECTION_NAME = os.getenv("COLLECTION_NAME")
-ATLAS_VECTOR_SEARCH_INDEX_NAME = os.getenv("ATLAS_VECTOR_SEARCH_INDEX_NAME")
-LLM_MODEL_NAME = os.getenv("LLM_MODEL_NAME")
+COLLECTION_NAME = "Users"
 
 client = AsyncIOMotorClient(MONGO_URI)
 db = client[DB_NAME]
 collection = db[COLLECTION_NAME]
 
-async def perform_similarity_search(query: str, top_k: int=100) -> list[str]:
-    try:
-        if not all([MONGO_URI, DB_NAME, COLLECTION_NAME, ATLAS_VECTOR_SEARCH_INDEX_NAME, LLM_MODEL_NAME]):
-            raise ValueError("Set the environment variables MONGO_URI, DB_NAME, COLLECTION_NAME, ATLAS_VECTOR_SEARCH_INDEX_NAME, and MODEL_NAME")
-        
-        embedding_model = OllamaEmbeddings(model=LLM_MODEL_NAME)
-        pipeline = [
-            {
-                "$vectorSearch": {
-                    "index": ATLAS_VECTOR_SEARCH_INDEX_NAME,
-                    "path": "embeddings",
-                    "queryVector": embedding_model.embed_query(query),
-                    "numCandidates": 100,
-                    "limit": top_k
-                }
-            }
-        ]
+async def read_all_users():
+    tasks = []
+    cursor = collection.find({})
+    async for document in cursor:
+        tasks.append(UserModel(**document))
+    return tasks
 
-        async with collection.aggregate(pipeline) as cursor:
-            results = []
-            async for doc in cursor:
-                results.append(doc["text"])
+async def read_one_user_by_id(id):
+    task = await collection.find_one({"_id": ObjectId(id)})
+    return task
 
-        return results
+async def read_one_user_by_name(username):
+    task = await collection.find_one({"username": username})
+    return task
 
-    except Exception as e:
-        print(f"Error during similarity search: {e}")
-        return None
+async def read_one_user_by_email(email):
+    task = await collection.find_one({"email": email})
+    return task
 
-def get_message_history(chat_history_json_path: str) -> list[str]:
-    try:
-        with open(chat_history_json_path, 'r') as chat_history_file:
-            data = json.load(chat_history_file)
-            if len(data) > 5:
-                chat_history = [chat for chat in data]
-            else:
-                chat_history = data[-5:]
-        return chat_history
-    except Exception as e:
-        print(f"Error during loading chat histoy json: {e}")
-        return None
+async def create_user(task):
+    new_task = await collection.insert_one(task)
+    created_task = await collection.find_one({"_id": new_task.inserted_id})
+    return created_task
 
-async def prompt_engine(query: str, chat_history_json_path: str) -> list[BaseMessage]:
+async def update_user_by_id(id: str, data: UpdateUserModel):
+    task = {k: v for k, v in data.model_dump().items() if v is not None}
+    await collection.update_one({"_id": ObjectId(id)}, {"$set": task})
+    document = await collection.find_one({"_id": ObjectId(id)})
+    return document
 
-    chat_history = get_message_history(chat_history_json_path)
-    
-    messages = []
+async def update_user_by_user(username: str, data: UpdateUserModel):
+    task = {k: v for k, v in data.model_dump().items() if v is not None}
+    await collection.update_one({"username": username}, {"$set": task})
+    document = await collection.find_one({"username": username})
+    return document
 
-    context = """
-        You are an asistent of a second world war general, 
-        you are in a bunker and the general is asking you questions about the war.
-        If you don't know the answer, say you don't know.
-        Use three sentence maximum and keep the answer concise. 
+async def update_user_chat(username: str, chat: dict[str, list[dict]]):
+    await collection.update_one({"username": username}, {"$set": {"chats": chat}})
+    document = await collection.find_one({"username": username})
+    return document
 
-        If is necessary, you can use the next information, but don't say that you are using it:
-    """
-    
-    similar_search = await perform_similarity_search(query)
-    context += "\n".join(similar_search)
 
-    messages.append(SystemMessage(content=context))
 
-    for entry in chat_history:
-        if entry["role"] == "human":
-            messages.append(HumanMessage(content=entry["content"]))
-        elif entry["role"] == "ai":
-            messages.append(AIMessage(content=entry["content"]))
-        # elif entry["role"] == "system":
-        #     messages.append(SystemMessage(content=entry["content"]))
-
-        # Añadir la nueva consulta al historial
-        messages.append(HumanMessage(content=query)) 
-
-    return messages
-
-async def streaming_response(query: str, chat_history_json_path: str) -> AsyncIterable[str]:
-
-    messages = await prompt_engine(query, chat_history_json_path)
-
-    # Invocar el modelo de chat con el historial completo
-    callback = AsyncIteratorCallbackHandler()
-    chat_model = ChatOllama(
-        model=LLM_MODEL_NAME,
-        streaming=True,
-        verbose=True,
-        callbacks=[callback],
-    )
-
-    task = asyncio.create_task(
-        chat_model.ainvoke(input = messages)
-    )
-
-    try:
-        async for token in callback.aiter():
-            yield token
-    except Exception as e:
-        print(f"Caught exception: {e}")
-    finally:
-        callback.done.set()
-
-    await task
