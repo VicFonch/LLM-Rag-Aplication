@@ -1,13 +1,25 @@
-# LLM Rag Aplication
+# The Resistance Archive
 
-## Workflows
+**The Resistance Archive** es un sistema de generación aumentada por recuperación (RAG) diseñado para proporcionar asistencia sobre hechos históricos de la Segunda Guerra Mundial. El proyecto utiliza el modelo **Llama 3.1** a través de **Ollama** y presenta a **Ollama Montgomery**, un general veterano de la Segunda Guerra Mundial, como asistente.
 
-1. Update config.yaml
-2. Update schema.yaml
-3. Update params.yaml
-4. Update the entity
-5. Update the configuration manager in src config
-6. Update the components
-7. Update the pipeline
-8. Update the main.py
-9. Update the app.py
+## Características
+
+- **Consultas históricas:** Obtén respuestas detalladas a preguntas sobre la Segunda Guerra Mundial.
+- **Asistente interactivo:** Ollama Montgomery, el asistente virtual, proporciona información de manera conversacional y educativa.
+- **Modelo avanzado:** Utiliza el modelo Llama 3.1 a través de Ollama para respuestas precisas y relevantes.
+
+## Instalación
+
+Sigue estos pasos para configurar y ejecutar el proyecto en tu máquina local.
+
+### Requisitos previos
+
+- [Python 3.8+](https://www.python.org/downloads/)
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [Node.js y npm](https://nodejs.org/)
+
+### Clonar el repositorio
+
+```bash
+git clone https://github.com/tuusuario/The-Resistance-Archive.git
+cd The-Resistance-Archive
