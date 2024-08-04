@@ -17,6 +17,7 @@ Sigue estos pasos para configurar y ejecutar el proyecto en tu máquina local.
 - [Python 3.8+](https://www.python.org/downloads/)
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [Node.js y npm](https://nodejs.org/)
+- [ReactJS](https://es.react.dev/)
 
 ### Clonar el repositorio
 
