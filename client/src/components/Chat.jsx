@@ -1,4 +1,4 @@
-import "./styles/Main.css";
+import "./styles/Chat.css";
 import { useState } from "react";
 import { assets } from "../assets/assets";
 import { Link } from "react-router-dom";
@@ -10,7 +10,7 @@ const cardsData = [
   { id: 4, title: "Card 4", description: "Description for Card 4" },
 ];
 
-export const Main = () => {
+export const Chat = () => {
   const [isLogedIn, setIsLogedIn] = useState(false);
 
   return (
@@ -24,7 +24,7 @@ export const Main = () => {
             <Link to={"/login"}>
               <button className="login">Login</button>
             </Link>
-            <Link to={"/login"}>
+            <Link to={"/signup"}>
               <button className="signup">Sign Up</button>
             </Link>
           </div>

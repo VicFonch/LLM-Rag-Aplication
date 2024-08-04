@@ -65,3 +65,17 @@
     padding-right: 10px;
     cursor: pointer;
 }
+
+.sidebar .help-box {
+    position: absolute;
+    text-align: justify;
+    bottom: 60px;
+    left: 100px;
+    width: 240px; /* Ajusta el ancho según tus necesidades */
+    padding: 15px;
+    margin: 15px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    border-radius: 10px; /* Añade un borde redondeado si lo deseas */
+}

@@ -1,5 +1,10 @@
 import React from "react";
+import { FormLogin } from "../components/Forms";
 
 export const Login = () => {
-  return <div>Login</div>;
+  return (
+    <>
+      <FormLogin />
+    </>
+  );
 };
